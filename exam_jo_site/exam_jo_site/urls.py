@@ -30,6 +30,10 @@ urlpatterns = [
     path("accueil2/", views.accueil2, name="accueil2"),
     path("deconnexion/", views.deconnexion, name="deconnexion"),
     path("billetterie/", views.billetterie, name='billetterie'),
+    path("judo/", views.judo, name='judo'),
+    path("checkout/", views.checkout, name='checkout'),
+    path("erreur/", views.erreur, name='erreur'),
+    path("search/", views.search_view, name='search_view'),
 ]
 
 # if settings.DEBUG:

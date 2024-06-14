@@ -1,71 +1,92 @@
-
-
-    <!DOCTYPE html>
-    <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
-        <style> @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap'); body {font-family: 'Poppins', sans-serif; margin: 0;}</style>
-        <title>Accueil2</title>
-    </head>
-    
-    {% load static %}
-    <body>
+{% load static %}
         {% include 'header.html' %}
         <div class="d-flex h-100 text-center text-bg-dark">
-           
-        <div class="cover-container d-flex w-100 p-3 mx-auto flex-column" style= "background-image: url('{% static "images/image.png" %}'); background-size: cover; background-position: center; height: 800px; >
+        
+          <div class="cover-container d-flex w-100 p-3 mx-auto flex-column" style= "background-image: url('{% static "images/athlete-feminine.jpg" %}'); background-size: cover; background-position: center; height: 800px; >
             <header class="mb-5">
-                <div class="d-flex align-items-center">
-                  <a href=""{% url 'accueil' %}""><img src="{% static "images/174px-Logo_JO_d'été_-_Paris_2024.png" %}" alt="Logo" style(="width: 250px; height: 100px;")></a>
-                  <!-- <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-auto">
-                    <li><a href="{% url 'accueil2' %}" class="nav-link px-3 text-white">Accueil</a></li>
-                    <li><a href="{% url 'billetterie' %}" class="nav-link px-3 text-white">Billétterie</a></li>
-                    <li><a href="*" class="nav-link px-3 text-white">FAQs</a></li>
-                  </ul> -->
+              <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+                <div class="container">
+                  <a class="navbar-brand d-lg-none" href="{% url 'accueil2' %}">
+                    <img src="{% static "images/Paris2024_Olywhiteleft.png" %}" alt="Logo" style="width: 70px; height: 70px;">
+                  </a>
+                  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+                    <div class="offcanvas-header">
+                      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                      <ul class="navbar-nav flex-grow-1 justify-content-between align-items-center">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'accueil2' %}">
+                          <a href="{% url 'accueil2' %}"><img src="{% static "images/Paris2024_Olywhiteleft.png" %}" alt="Logo" style="width: 100px; height: 100px;"></a>
+                        </a></li>
+                        <li class="nav-item dropdown text-white">
+                          <a class="nav-link dropdown-toggle text-light fw-bold" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+                              Tous les événements
+                          </a>
+                          <div class="dropdown-menu text-bg-dark" aria-labelledby="navbarDropdown">
+                              <div class="d-flex flex-row">
+                                  <div class="p-4">
+                                      <a class="dropdown-item text-light" href="{% url 'judo' %}">Judo</a>
+                                      <a class="dropdown-item text-light" href="#">Boxe</a>
+                                      <a class="dropdown-item text-light" href="#">Rugby</a>
+                                      <a class="dropdown-item text-light" href="#">Handball</a>
+                                  </div>
+                                  <div class="p-4">
+                                      <a class="dropdown-item text-light" href="#">Football</a>
+                                      <a class="dropdown-item text-light" href="#">Athlétisme</a>
+                                      <a class="dropdown-item text-light" href="#">Natation</a>
+                                      <a class="dropdown-item text-light" href="#">Badminton</a>
+                              </div>
+                          </div>
+                        </div>
+                      </li>
+                        <li class="nav-item"><a class="nav-link text-light fw-bold" href="#" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Toutes les villes</a></li>
+                        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{% url 'search_view' %}">
+                          <input type="search" name="recherche" class="form-control form-control-dark" placeholder="Rechercher..." aria-label="Rechercher">
+                        </form>
+                        </a></li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-              </header>
-        
-          <main class="px-3">
-            <h1 class="text-black">Cover your page.</h1>
-        <p class="lead text-black">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-            <p class="lead">
-              <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white">Learn more</a>
-            </p>
-          </main>
-        
-          <footer class="mt-auto text-white-50">
-            <p>Cover template for <a href="https://getbootstrap.com/" class="text-white">Bootstrap</a>, by <a href="https://twitter.com/mdo" class="text-white">@mdo</a>.</p>
-          </footer>
-        </div>
-    </div>
- 
-    <div class="mt-5 me-5 ms-5">
-        <h2 class="pb-2 border-bottom">BILLETTERIE DES JEUX OLYMPIQUES ET PARALYMPIQUES</h2>
-        <a class="text-decoration-none" href="{% url 'billetterie' %}">
-        <div class="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-5">
-          <div class="col" style="height: 400px;">
-    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('{% static "images/image.png" %}'); background-size: cover; background-position: center; ")>
-              <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Jeux Paralympiques</h3>
+              </nav>
+            </header>
+          
+            <main class="px-3 text-start" style="margin-top:150px;">
+              <h1 class="text-light fw-bold" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">BILLETTERIE DES JEUX OLYMPIQUES 2024</h1>
+      <p class="lead text-light" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);">Bienvenue sur la billetterie officielle des Jeux Olympiques et Paralympiques de Paris 2024 ! Pour vous connecter à votre compte ou en créer un, cliquez ci-dessous sur "Je me connecte".</p>
+              <p class="lead">
+                <a href="{% url 'billetterie' %}" class="btn btn-lg btn-light fw-bold border-white bg-white" style="box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">Billetterie</a>
+              </p>
+            </main>
+          </div>
+      </div>
+      
+      <div class="mt-5 me-5 ms-5">
+          <h2 class="pb-2 border-bottom">BILLETTERIE DES JEUX OLYMPIQUES ET PARALYMPIQUES</h2>
+          <a class="text-decoration-none" href="{% url 'billetterie' %}">
+          <div class="row row-cols-1 row-cols-lg-2 align-items-stretch g-4 py-5">
+            <div class="col" style="height: 400px;">
+      <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('{% static "images/VIGNETTE_PARA_FR-201223.webp" %}'); background-size: cover; background-position: center; ")>
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                  <!-- <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Jeux Paralympiques</h3> -->
+                </div>
               </div>
             </div>
-          </div>
-    </a>
-        <a class="text-decoration-none" href="{% url 'billetterie' %}">
-          <div class="col" style="height: 400px">
-            <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('{% static "images/image.png" %}'); background-size: cover; background-position: center;")>
-              <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Jeux Olympiques</h3>
+      </a>
+          <a class="text-decoration-none" href="{% url 'billetterie' %}">
+            <div class="col" style="height: 400px">
+              <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('{% static "images/VIGNETTE_OLY_FR-201223.webp" %}'); background-size: cover; background-position: center;")>
+                <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                  <!-- <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">Jeux Olympiques</h3> -->
+                </div>
               </div>
             </div>
+          </a>
           </div>
-        </a>
-        </div>
-    </div>
+      </div>
     
         {% include 'footer.html' %}
     </body>
-    </html>
