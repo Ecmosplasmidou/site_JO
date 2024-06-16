@@ -17,9 +17,10 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from my_authentification import views
+from store import views
 from django.conf import settings
 from django.conf.urls.static import static
+from store.views import produit_details
 
 
 urlpatterns = [
@@ -30,11 +31,15 @@ urlpatterns = [
     path("accueil2/", views.accueil2, name="accueil2"),
     path("deconnexion/", views.deconnexion, name="deconnexion"),
     path("billetterie/", views.billetterie, name='billetterie'),
+    # path("produit/<slug:slug>/", produit_details, name='produit'), #slug est un champ qui permet de créer des urls plus lisible
+    path("<str:type_produit>/<slug:slug>/", views.produit_details, name='produit_details'), 
     path("judo/", views.judo, name='judo'),
+    path("boxe/", views.boxe, name='boxe'),
+    path("football/", views.football, name='football'), 
     path("checkout/", views.checkout, name='checkout'),
     path("erreur/", views.erreur, name='erreur'),
     path("search/", views.search_view, name='search_view'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:
 #     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
