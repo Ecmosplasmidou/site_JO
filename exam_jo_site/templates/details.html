@@ -21,7 +21,8 @@
                             <h4 class="text-end me-3 fw-bold text-light">{{produit.gratuit}}</h4>
                         </div>
                         <p class="lead text-end me-4">
-                          <a href="#" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Ajouter au panier</a>
+                          <a href="{% url 'add_to_cart' produit.type produit.slug %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Ajouter au panier</a>
+                          <!--  -->
                         </p>
                         </div>
                     </div>

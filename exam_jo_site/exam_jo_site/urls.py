@@ -20,22 +20,28 @@ from django.urls import path
 from store import views
 from django.conf import settings
 from django.conf.urls.static import static
-from store.views import produit_details
+# from store.views import produit_details
+from account.views import inscription, connexion, deconnexion
+from store.views import add_to_cart
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("inscription/", views.inscription, name="inscription"),
-    path("connexion/", views.connexion, name="connexion"),
+    path("inscription/", inscription, name="inscription"),
+    path("connexion/", connexion, name="connexion"),
     path("", views.accueil, name="accueil"),
+    path("accueil/", views.accueil, name="accueil"),
     path("accueil2/", views.accueil2, name="accueil2"),
-    path("deconnexion/", views.deconnexion, name="deconnexion"),
+    path("deconnexion/", deconnexion, name="deconnexion"),
     path("billetterie/", views.billetterie, name='billetterie'),
     # path("produit/<slug:slug>/", produit_details, name='produit'), #slug est un champ qui permet de créer des urls plus lisible
-    path("<str:type_produit>/<slug:slug>/", views.produit_details, name='produit_details'), 
+    # path("<str:type_produit>/<slug:slug>/", views.produit_details, name='produit'), 
+    path('<str:type>/<str:slug>/', views.produit_details, name='produit_details'),
+    path('<str:type>/<str:slug>/add_to_cart', views.add_to_cart, name='add_to_cart'),
     path("judo/", views.judo, name='judo'),
     path("boxe/", views.boxe, name='boxe'),
-    path("football/", views.football, name='football'), 
+    path("football/", views.football, name='football'),
+    path("panier/", views.panier, name='panier'),
     path("checkout/", views.checkout, name='checkout'),
     path("erreur/", views.erreur, name='erreur'),
     path("search/", views.search_view, name='search_view'),

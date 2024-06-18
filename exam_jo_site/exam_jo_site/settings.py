@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     'store',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ WSGI_APPLICATION = "exam_jo_site.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "test_exam_jo",
+        "NAME": "exam_jo_site",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",
@@ -132,6 +133,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'store' / 'static']
 MEDIA_URL = "/medias/"
 MEDIA_ROOT = BASE_DIR / "images"
+AUTH_USER_MODEL = 'account.Utilisateur'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

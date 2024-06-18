@@ -1,41 +1,42 @@
 from django.shortcuts import render, redirect
-from .form import CustomerUserCreationForm
 from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
-from django.http import JsonResponse
-from difflib import get_close_matches
+# from .forms import CustomerUserCreationForm
+# from django.contrib.auth import authenticate, login, logout
+# from django.contrib import messages
+# from django.http import JsonResponse
+# from difflib import get_close_matches
 from django.shortcuts import get_object_or_404
 from django.http import Http404
+from django.views.generic import TemplateView
 import os
 
 
-from store.models import Boxe_produit
-from store.models import Produit
+# from store.models import Football_produit, Boxe_produit, Produit, commande_judo, commande_boxe_produit, commande_football_produit, Cart
+from store.models import Produits, Cart, Commandes
 
-# Create your views here.
+# # Create your views here.
 
-def inscription(request):
-    if request.method == "POST":
-        form = CustomerUserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("connexion")
-    else:
-        form = CustomerUserCreationForm()
-    return render(request, "inscription.html", {"form": form})
+# def inscription(request):
+#     if request.method == "POST":
+#         form = CustomerUserCreationForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             return redirect("connexion")
+#     else:
+#         form = CustomerUserCreationForm()
+#     return render(request, "inscription.html", {"form": form})
 
-def connexion(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("accueil2")
-        else:
-            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
-    return render(request, "connexion.html")
+# def connexion(request):
+#     if request.method == "POST":
+#         username = request.POST.get("username")
+#         password = request.POST.get("password")
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             return redirect("accueil2")
+#         else:
+#             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
+#     return render(request, "connexion.html")
 
 
 def accueil(request):    
@@ -44,31 +45,28 @@ def accueil(request):
 def accueil2(request):
     return render(request, "accueil2.html")
 
-def deconnexion(request):
-    logout(request)
-    return redirect("accueil")
+# def deconnexion(request):
+#     logout(request)
+#     return redirect("accueil")
 
 def billetterie(request):   
     return render(request, "billetterie.html")
 
 def judo(request):
-    produits = Produit.objects.all()
+    produits = Produits.objects.filter(type='judo')
     return render(request, "judo.html", context={"produits": produits})
 
 def boxe(request):
-    produits = Boxe_produit.objects.all()
+    produits = Produits.objects.filter(type='boxe')
     return render(request, "boxe.html", context={"produits": produits})
 
 def football(request):
-    return render(request, "football.html")
+    produits = Produits.objects.filter(type='football')
+    return render(request, "football.html", context={"produits": produits})
 
-def produit_details(request, slug, type_produit):
-    if type_produit == 'produit':
-        produit = get_object_or_404(Produit, slug=slug)
-    elif type_produit == 'boxe_produit':
-        produit = get_object_or_404(Boxe_produit, slug=slug)
-    else:
-        raise Http404("Type de produit non valide")
+
+def produit_details(request, type, slug):
+    produit = get_object_or_404(Produits, type=type, slug=slug)
     return render(request, "details.html", context={"produit": produit})
 
 
@@ -80,6 +78,44 @@ def produit_details(request, slug, type_produit):
 # def judo_produit(request):
 #     return render(request, "judo_produit.html")
 
+
+def add_to_cart(request, slug, type):
+    utilisateur = request.user
+    panier, _ = Cart.objects.get_or_create(utilisateur=utilisateur)
+
+    # Vérifiez si le type de produit est valide
+    if type not in ['judo', 'boxe', 'football']:
+        return HttpResponse('Invalid product type')
+
+    # Obtenez le produit en fonction du slug et du type
+    produit = get_object_or_404(Produits, slug=slug, type=type)
+    commande, created = Commandes.objects.get_or_create(produit=produit, utilisateur=utilisateur)
+
+    if created:
+        panier.commandes.add(commande)
+        panier.save()
+    else:
+        commande.quantite += 1
+        commande.save()
+
+    return redirect('produit_details', slug=slug, type=type)
+
+
+# def add_to_cart(request, slug):
+#     utilisateur = request.user
+#     produit = get_object_or_404(Produit, slug=slug)
+#     boxe_produit = get_object_or_404(Boxe_produit, slug=slug)
+#     football_produit = get_object_or_404(Football_produit, slug=slug)
+#     panier, _ = Cart.object.get_or_create(utilisateur=utilisateur)
+#     commande, created = commande_judo.objects.get_or_create(produit=produit, utilisateur=utilisateur)
+
+def panier(request):
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    return render(request, "panier.html", context={"commandes": panier.commandes.all()})
+
+def vue_panier(request):
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    return render(request, "header3.html", context={"commandes": panier.commandes.all()})
 
 def checkout(request):
     return render(request, "checkout.html")
