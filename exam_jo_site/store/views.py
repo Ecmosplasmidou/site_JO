@@ -11,43 +11,15 @@ from django.views.generic import TemplateView
 import os
 
 
-# from store.models import Football_produit, Boxe_produit, Produit, commande_judo, commande_boxe_produit, commande_football_produit, Cart
-from store.models import Produits, Cart, Commandes
+from store.models import Produits, Cart, Commandes, CommandeArticle
 
 # # Create your views here.
-
-# def inscription(request):
-#     if request.method == "POST":
-#         form = CustomerUserCreationForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             return redirect("connexion")
-#     else:
-#         form = CustomerUserCreationForm()
-#     return render(request, "inscription.html", {"form": form})
-
-# def connexion(request):
-#     if request.method == "POST":
-#         username = request.POST.get("username")
-#         password = request.POST.get("password")
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None:
-#             login(request, user)
-#             return redirect("accueil2")
-#         else:
-#             messages.error(request, "Nom d'utilisateur ou mot de passe incorrect")
-#     return render(request, "connexion.html")
-
 
 def accueil(request):    
     return render(request, "accueil.html")
 
 def accueil2(request):
     return render(request, "accueil2.html")
-
-# def deconnexion(request):
-#     logout(request)
-#     return redirect("accueil")
 
 def billetterie(request):   
     return render(request, "billetterie.html")
@@ -70,15 +42,6 @@ def produit_details(request, type, slug):
     return render(request, "details.html", context={"produit": produit})
 
 
-# def produit_details(request, slug):
-#     produit = get_object_or_404(Produit, slug=slug)
-#     boxe_produit = get_object_or_404(Boxe_produit, slug=slug)
-#     return render(request, "details.html", context={"produit": produit, "boxe_produit": boxe_produit})
-    
-# def judo_produit(request):
-#     return render(request, "judo_produit.html")
-
-
 def add_to_cart(request, slug, type):
     utilisateur = request.user
     panier, _ = Cart.objects.get_or_create(utilisateur=utilisateur)
@@ -89,33 +52,48 @@ def add_to_cart(request, slug, type):
 
     # Obtenez le produit en fonction du slug et du type
     produit = get_object_or_404(Produits, slug=slug, type=type)
-    commande, created = Commandes.objects.get_or_create(produit=produit, utilisateur=utilisateur)
+
+    # Obtenez la commande pour l'utilisateur actuel et le type de produit
+    commande, _ = Commandes.objects.get_or_create(utilisateur=utilisateur, type=type)
+
+    # Vérifiez si le produit est déjà dans la commande
+    commande_article, created = CommandeArticle.objects.get_or_create(commande=commande, produit=produit)
 
     if created:
+        # Si le produit n'était pas dans la commande, ajoutez-le au panier
         panier.commandes.add(commande)
         panier.save()
     else:
-        commande.quantite += 1
-        commande.save()
+        # Si le produit était déjà dans la commande, augmentez la quantité
+        commande_article.quantite += 1
+        commande_article.save()
 
     return redirect('produit_details', slug=slug, type=type)
 
 
-# def add_to_cart(request, slug):
-#     utilisateur = request.user
-#     produit = get_object_or_404(Produit, slug=slug)
-#     boxe_produit = get_object_or_404(Boxe_produit, slug=slug)
-#     football_produit = get_object_or_404(Football_produit, slug=slug)
-#     panier, _ = Cart.object.get_or_create(utilisateur=utilisateur)
-#     commande, created = commande_judo.objects.get_or_create(produit=produit, utilisateur=utilisateur)
 
 def panier(request):
     panier = get_object_or_404(Cart, utilisateur=request.user)
-    return render(request, "panier.html", context={"commandes": panier.commandes.all()})
+    commandearticles = CommandeArticle.objects.filter(commande__in=panier.commandes.all())
+    return render(request, "panier.html", context={"commandes": panier.commandes.all(), 'commandearticles': commandearticles})
 
-def vue_panier(request):
-    panier = get_object_or_404(Cart, utilisateur=request.user)
-    return render(request, "header3.html", context={"commandes": panier.commandes.all()})
+# def vue_panier(request):
+#     panier = get_object_or_404(Cart, utilisateur=request.user)
+#     return render(request, "header3.html", context={"commandes": panier.commandes.all()})
+
+
+def supr_panier(request, commande_id, commandearticle_id):
+    commande = get_object_or_404(Commandes, id=commande_id, utilisateur=request.user)
+    commande_article = get_object_or_404(CommandeArticle, id=commandearticle_id, commande_id=commande_id)
+    if commande_article.quantite > 1:
+        commande_article.quantite -= 1
+        commande_article.save()
+    else:
+        commande_article.delete()
+        if not CommandeArticle.objects.filter(commande=commande).exists():
+            commande.delete()
+    return redirect('panier')
+
 
 def checkout(request):
     return render(request, "checkout.html")
@@ -167,13 +145,4 @@ def search_view(request):
         #changer cette page par page d'erreur de recherche plus tard
     else:
         return render(request, "erreur.html", {"query": query})  
-                    
-            
-
-# def search_suggestions(request):
-#     dir_path = os.path.dirname(os.path.realpath(__file__))
-#     templates_path = os.path.join(dir_path, 'templates')
-#     all_files = os.listdir(templates_path)
-#     html_files = [f for f in all_files if f.lower().endswith('.html')]
-#     results = [f for f in html_files]
 

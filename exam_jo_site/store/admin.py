@@ -7,7 +7,7 @@ from django.contrib import admin
 # from .models import commande_football_produit
 from .models import Cart
 from .models import Commandes
-from .models import Produits
+from .models import Produits, CommandeArticle
 
 # Register your models here.
 
@@ -19,4 +19,5 @@ from .models import Produits
 # admin.site.register(commande_football_produit)
 admin.site.register(Commandes)
 admin.site.register(Produits)
+admin.site.register(CommandeArticle)
 admin.site.register(Cart)

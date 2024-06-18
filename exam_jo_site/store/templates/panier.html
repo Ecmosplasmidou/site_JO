@@ -18,40 +18,44 @@
 
 <div class="px-4 py-5" id="custom-cards">
 
-{% for commande in commandes %}
-
-    <div class="d-flex flex-column w-100 my-md-3 ps-md-3">
-        <div class="row g-0">
-            <div class="col-12 col-md-4">
-                <div class="pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden mb-md-4 rounded-start shadow-box" style="background-image: url('{{ commande.produit.image.url }}'); background-size: cover; background-position: center;">
-                    <div class="taille2"></div>
+    {% for commande in commandes %}
+    {% for commandearticle in commande.commandearticle_set.all %}
+        <div class="d-flex flex-column w-100 my-md-3 ps-md-3">
+            <div class="row g-0">
+                <div class="col-12 col-md-4">
+                    <div class="pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden mb-md-4 rounded-start shadow-box" style="background-image: url('{{ commandearticle.produit.image.url }}'); background-size: cover; background-position: center;">
+                        <div class="taille2"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-8 rounded-end d-flex mb-md-4 bg-info shadow-box mb-sm-2">
-                <div class="d-flex flex-column flex-grow-1">
-                <div class="my-3 py-3">
-                    <h2 class="text-light fw-bold ms-3">{{ commande.produit.name }}</h2>
-                    <p class="lead text-light ms-3">{{ commande.produit.description }}</p>
-                    <h4 class="text-end me-3 fw-bold text-light">{{ commande.produit.gratuit }}</h4>
-                    <p class="lead text-light ms-3">{{ commande.quantite }}</p>
-                </div>
+                <div class="col-12 col-md-8 rounded-end d-flex mb-md-4 bg-info shadow-box mb-sm-2">
+                    <div class="d-flex flex-column flex-grow-1">
+                        <div class="my-3 py-3">
+                            <h2 class="text-light fw-bold ms-3">{{ commandearticle.produit.name }}</h2>
+                            <p class="lead text-light ms-3">{{ commandearticle.produit.description }}</p>
+                            <p class="lead text-light ms-3">{{ commandearticle.quantite }}</p>
+                            <h4 class="text-end me-3 fw-bold text-light">{{ commandearticle.produit.gratuit }}</h4>
+                        </div>
+                        <p class="lead text-end me-4">
+                            <a href="{% url 'supr_panier' commande_id=commande.id commandearticle_id=commandearticle.id %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Supprimer</a>  
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-        <p class="lead text-end me-4">
-            <p class="lead text-end me-4">
-                {% if commandes %}
-                    <a href="{% url 'checkout' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1">Checkout</a>
-                {% else %}
-                    <a href="#" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1" disabled>Checkout</a>
-                {% endif %}
-            </p>
-        </p>
-
-    </div>
+    {% endfor %}
     {% empty %}
     <p>Aucun produit pour cette commande.</p>
 {% endfor %}
+
+<p class="lead text-end me-4">
+    <p class="lead text-end me-4">
+        {% if commande.commandearticle_set.all %}
+            <a href="{% url 'checkout' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1">Checkout</a>
+        {% else %}
+            <a href="{% url 'billetterie' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1" disabled>Billetterie</a>
+        {% endif %}
+    </p>
+</p>
 
 </div>
 

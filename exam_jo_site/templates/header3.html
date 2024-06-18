@@ -26,7 +26,7 @@
   </svg>
 <header>
   <nav class="navbar navbar-expand-lg bg-primary border-bottom" data-bs-theme="dark">
-    <div class="container">
+    <div class="container ms-4">
       <a class="navbar-brand d-lg-none" href="{% url 'accueil' %}">
         <img src="{% static "images/Paris2024_Olywhiteleft.png" %}" alt="Logo" style="width: 70px; height: 70px;">
       </a>
@@ -83,7 +83,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  {% for commande in commandes %}
+                  <!-- {% for commande in commandes %}
                   <h2>Commande : {{ commande.produit.name }}</h2>
                   <div>
                       <h3>{{ commande.produit.description }}</h3>
@@ -92,7 +92,7 @@
                   </div>
                   {% empty %}
                       <p>Aucun produit pour cette commande.</p>
-              {% endfor %}
+              {% endfor %} -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-dark text-black" data-bs-dismiss="modal">Fermer</button>
@@ -111,6 +111,42 @@
         </div>
       </div>
     </div>
+    <div class="text-end ms-auto me-4">
+      <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center text-light" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (dark)">
+          <!-- <svg class="bi" width="24" height="24"><use href="#person"></use></svg>
+          <span class="visually-hidden" id="bd-theme-text">Toggle theme</span> -->
+          {{ user.username }}
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+          <li>
+              <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
+                <a href="{% url 'accueil' %}" class="text-decoration-none text-black">  
+                  <svg class="bi me-2 opacity-50" width="1.5em" height="1.5em"><use href="#person"></use></svg>
+                  Mon compte
+                  <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </a>
+              </button>
+          </li>
+          <li>
+              <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="true">
+                <a href="{% url 'accueil' %}" class="text-decoration-none text-black">  
+                  <svg class="bi me-2 opacity-50" width="1.5em" height="1.5em"><use href="#orders"></use></svg>
+                  Mes commandes
+                  <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </a>
+              </button>
+          </li>
+          <li>
+              <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="false">
+                <a href="{% url 'deconnexion' %}" class="text-decoration-none text-black">  
+                  <svg class="bi me-2 opacity-50" width="1.5em" height="1.5em"><use href="#out"></use></svg>
+                  Déconnexion
+                  <svg class="bi ms-auto d-none" width="1em" height="1em"><use href="#check2"></use></svg>
+                </a>
+                </button>
+          </li>
+      </ul>
   </nav>
+  </div>
 </header>  
 </html>
