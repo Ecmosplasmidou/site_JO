@@ -1,5 +1,10 @@
 {% load static %}
-{% include 'header3.html' %}
+{% if user.is_authenticated %}
+{% include 'header3.html' %} 
+{% endif %}
+{% if not user.is_authenticated %}
+   {% include 'header.html' %}
+{% endif %}   
 
 <style>.shadow-box{box-shadow: 0px 0px 5px black;}</style>
 

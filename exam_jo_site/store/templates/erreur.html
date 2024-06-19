@@ -7,7 +7,12 @@
 
     
   {% load static %}
-  {% include 'header3.html' %}    
+  {% if user.is_authenticated %}
+  {% include 'header3.html' %} 
+{% endif %}
+{% if not user.is_authenticated %}
+     {% include 'header.html' %}
+{% endif %}      
     <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
       <symbol id="aperture" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="12" cy="12" r="10"></circle>

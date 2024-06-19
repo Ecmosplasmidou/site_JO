@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.views.generic import TemplateView
+from django.http import JsonResponse
 import os
 
 
@@ -44,6 +45,8 @@ def produit_details(request, type, slug):
 
 def add_to_cart(request, slug, type):
     utilisateur = request.user
+    cart, created = Cart.objects.get_or_create(utilisateur=request.user) 
+    print(f"Panier: {cart.id}, Commandes: {cart.commandes.count()}")
     panier, _ = Cart.objects.get_or_create(utilisateur=utilisateur)
 
     # Vérifiez si le type de produit est valide
@@ -67,15 +70,17 @@ def add_to_cart(request, slug, type):
         # Si le produit était déjà dans la commande, augmentez la quantité
         commande_article.quantite += 1
         commande_article.save()
-
+    panier.update_total()
+    print(f'Updated cart total: {panier.total}')  # Ajoutez cette ligne
     return redirect('produit_details', slug=slug, type=type)
 
 
 
 def panier(request):
+    cart = Cart.objects.get(utilisateur=request.user) 
     panier = get_object_or_404(Cart, utilisateur=request.user)
     commandearticles = CommandeArticle.objects.filter(commande__in=panier.commandes.all())
-    return render(request, "panier.html", context={"commandes": panier.commandes.all(), 'commandearticles': commandearticles})
+    return render(request, "panier.html", context={"commandes": panier.commandes.all(), 'commandearticles': commandearticles, 'cart': cart})
 
 # def vue_panier(request):
 #     panier = get_object_or_404(Cart, utilisateur=request.user)
@@ -92,6 +97,50 @@ def supr_panier(request, commande_id, commandearticle_id):
         commande_article.delete()
         if not CommandeArticle.objects.filter(commande=commande).exists():
             commande.delete()
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    panier.update_total()
+    return redirect('panier')
+
+
+def supr_panier_header(request, commande_id, commandearticle_id):
+    commande = get_object_or_404(Commandes, id=commande_id, utilisateur=request.user)
+    commande_article = get_object_or_404(CommandeArticle, id=commandearticle_id, commande_id=commande_id)
+    if commande_article.quantite > 1:
+        commande_article.quantite -= 1
+        commande_article.save()
+    else:
+        commande_article.delete()
+        if not CommandeArticle.objects.filter(commande=commande).exists():
+            commande.delete()
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    panier.update_total()
+    return redirect(request.META.get('HTTP_REFERER', 'default_if_none'))
+
+
+def augmenter_panier(request, commandearticle_id):
+    commandearticle = get_object_or_404(CommandeArticle, id=commandearticle_id)
+    commandearticle.quantite += 1
+    commandearticle.save()
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    panier.update_total()
+    return redirect('panier')
+
+
+def augmenter_panier_header(request, commandearticle_id):
+    commandearticle = get_object_or_404(CommandeArticle, id=commandearticle_id)
+    commandearticle.quantite += 1
+    commandearticle.save()
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    panier.update_total()
+    return redirect(request.META.get('HTTP_REFERER', 'default_if_none'))
+
+
+def maj_prix(request, produit_id):
+    commandearticle = get_object_or_404(CommandeArticle, id=produit_id)
+    commandearticle.quantite += 1
+    commandearticle.save()
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    panier.update_total()
     return redirect('panier')
 
 

@@ -61,6 +61,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "store.context_processors.context_panier",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -79,7 +80,7 @@ WSGI_APPLICATION = "exam_jo_site.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "exam_jo_site",
+        "NAME": "site jo",
         "USER": "root",
         "PASSWORD": "",
         "HOST": "localhost",

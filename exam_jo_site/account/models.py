@@ -1,39 +1,7 @@
 from django.db import models
-# from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 # # Create your models here.
 
-# class UtilisateurManager(BaseUserManager):
-#     def get_by_natural_key(self, email):
-#         return self.get(email=email)
-
-# class Utilisateur(models.Model):
-#     nom = models.CharField(max_length=100)
-#     prenom = models.CharField(max_length=100)
-#     email = models.EmailField(unique=True)
-#     mot_de_passe = models.CharField(max_length=100)
-#     date_de_naissance = models.DateField()
-#     date_inscription = models.DateTimeField(auto_now_add=True)
-#     images = models.ImageField(upload_to='images/', blank=True)
-    
-    # objects = UtilisateurManager()
-    
-    # REQUIRED_FIELDS = ['nom', 'prenom', 'mot_de_passe', 'date_de_naissance']
-    # USERNAME_FIELD = 'email'
-    
-    # @property
-    # def is_anonymous(self):
-    #     return False
-    
-    # @property
-    # def is_authenticated(self):
-    #     return True
-    
-    # def __str__(self):
-    #     return self.nom
-    
-    
-    
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 

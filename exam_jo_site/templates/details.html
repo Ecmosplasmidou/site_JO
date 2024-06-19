@@ -1,5 +1,10 @@
 {% load static %}
-        {% include 'header3.html' %}
+{% if user.is_authenticated %}
+{% include 'header3.html' %} 
+{% endif %}
+{% if not user.is_authenticated %}
+   {% include 'header.html' %}
+{% endif %}   
 
         <div class="px-4 py-5" id="custom-cards">
             <h2 class="pb-2 border-bottom" style="margin-bottom: 60px;">{{produit.name}}</h2>
@@ -21,7 +26,12 @@
                             <h4 class="text-end me-3 fw-bold text-light">{{produit.gratuit}}</h4>
                         </div>
                         <p class="lead text-end me-4">
-                          <a href="{% url 'add_to_cart' produit.type produit.slug %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Ajouter au panier</a>
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'add_to_cart' produit.type produit.slug %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Ajouter au panier</a> 
+                        {% endif %}
+                        {% if not user.is_authenticated %}
+                        <a href="{% url 'billetterie' %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Retour</a>
+                        {% endif %}   
                           <!--  -->
                         </p>
                         </div>

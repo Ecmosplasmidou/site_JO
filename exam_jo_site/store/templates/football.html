@@ -1,10 +1,15 @@
 {% load static %}
-{% include 'header3.html' %}
+{% if user.is_authenticated %}
+{% include 'header3.html' %} 
+{% endif %}
+{% if not user.is_authenticated %}
+   {% include 'header.html' %}
+{% endif %}   
 
 <style>.shadow-box{box-shadow: 0px 0px 5px black;}</style>
 
 <div class="px-4 py-5" id="custom-cards">
-    <h2 class="pb-2 border-bottom" style="margin-bottom: 60px;">Football</h2>
+    <h2 class="pb-2 border-bottom" style="margin-bottom: 60px;">Judo</h2>
 
 {% for produit in produits %}
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,13 +17,13 @@
 <style>.shadow-box{box-shadow: 0px 0px 5px black;}</style>
 
 <div class="px-4 py-5" id="custom-cards">
-
+    
     {% for commande in commandes %}
     {% for commandearticle in commande.commandearticle_set.all %}
         <div class="d-flex flex-column w-100 my-md-3 ps-md-3">
             <div class="row g-0">
                 <div class="col-12 col-md-4">
-                    <div class="pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden mb-md-4 rounded-start shadow-box" style="background-image: url('{{ commandearticle.produit.image.url }}'); background-size: cover; background-position: center;">
+                    <div class="pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden mb-md-4 rounded-start shadow-box" style="background-image: url('{{ commandearticle.produit.image.url }}'); background-size: cover; background-position: center; height:402px">
                         <div class="taille2"></div>
                     </div>
                 </div>
@@ -32,11 +32,14 @@
                         <div class="my-3 py-3">
                             <h2 class="text-light fw-bold ms-3">{{ commandearticle.produit.name }}</h2>
                             <p class="lead text-light ms-3">{{ commandearticle.produit.description }}</p>
-                            <p class="lead text-light ms-3">{{ commandearticle.quantite }}</p>
-                            <h4 class="text-end me-3 fw-bold text-light">{{ commandearticle.produit.gratuit }}</h4>
+                            <div style="display: flex; flex-direction: column; align-items: start;">
+                                <a href="{% url 'augmenter_panier' commandearticle_id=commandearticle.id %}" class="btn btn-lg fw-bold border-white bg-white ms-3 shadow-box">Ajouter</a>
+                                <p class="lead text-dark bg-white p-3 ms-3 mt-3 rounded d-inline-block fw-bold">{{ commandearticle.quantite }}</p>
+                            </div>
+                            <h3 class="text-light ms-3 text-end fw-bold me-4">{{ commandearticle.produit.price }} €</h3>
                         </div>
                         <p class="lead text-end me-4">
-                            <a href="{% url 'supr_panier' commande_id=commande.id commandearticle_id=commandearticle.id %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart " data-product-id="1">Supprimer</a>  
+                            <a href="{% url 'supr_panier' commande_id=commande.id commandearticle_id=commandearticle.id %}" class="btn btn-lg fw-bold border-white bg-white add-to-cart shadow-box" data-product-id="1">Supprimer</a>  
                         </p>
                     </div>
                 </div>
@@ -47,14 +50,19 @@
     <p>Aucun produit pour cette commande.</p>
 {% endfor %}
 
+{% if cart.commandes.count > 0 %}
+    {% if cart.total == 0 %}
+        <h4 class="text-start me-3 fw-bold text-dark mt-3">Total : Gratuit</h4>
+    {% else %}
+        <h4 class="text-start me-3 fw-bold text-dark mt-3">Total : {{ cart.total }} €</h4>
+    {% endif %}
+{% endif %}
 <p class="lead text-end me-4">
-    <p class="lead text-end me-4">
-        {% if commande.commandearticle_set.all %}
-            <a href="{% url 'checkout' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1">Checkout</a>
+        {% if cart.commandes.count > 0 %}
+            <a href="{% url 'checkout' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart shadow-box" data-product-id="1">Checkout</a>
         {% else %}
-            <a href="{% url 'billetterie' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart " data-product-id="1" disabled>Billetterie</a>
+            <a href="{% url 'billetterie' %}" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart shadow-box" data-product-id="1" disabled>Billetterie</a>
         {% endif %}
-    </p>
 </p>
 
 </div>

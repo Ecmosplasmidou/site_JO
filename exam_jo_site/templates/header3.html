@@ -8,8 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>.shadow{text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);} .taille{width: 80%; height: 150px; border-radius: 21px 21px 0 0;}.taille2{height: 350px;}</style>
     <style> @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap'); body {font-family: 'Poppins', sans-serif; margin: 0;} button a{color: white;} button a:hover{color:black;}</style>
-    <style>.cart-count-svg {position: relative;left: -95px; top: -10px;} @media (max-width: 990px) {.cart-count-svg {left: 25px;top: -30px;}} @media (min-width: 991px) and (max-width: 1200px) {.cart-count-svg {left: -23px;top: -10px;}} @media (min-width: 1201px) and (max-width: 1399px) {.cart-count-svg {left: -60px;top: -10px;}} .btn-outline-dark:hover {background-color: white;border-color: black;} @media (max-width: 992px) {.modal-backdrop.show {display: none !important;}}.dropdown-item:hover {background-color: rgb(238, 238, 238);}</style>
-    <title>Billetterie</title>
+    <style>.cart-count-svg {position: relative;left: -95px; top: -10px;} @media (max-width: 990px) {.cart-count-svg {left: 25px;top: -30px;}} @media (min-width: 991px) and (max-width: 1200px) {.cart-count-svg {left: -23px;top: -10px;}} @media (min-width: 1201px) and (max-width: 1399px) {.cart-count-svg {left: -54px;top: -10px;}} .btn-outline-dark:hover {background-color: white;border-color: black;} @media (max-width: 992px) {.modal-backdrop.show {display: none !important;}}.dropdown-item:hover {background-color: rgb(238, 238, 238);}</style>
+    <style>.shadow-box{box-shadow: 0px 0px 2px black;} </style>
 </head>
 {% load static %}
 <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
@@ -83,16 +83,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <!-- {% for commande in commandes %}
-                  <h2>Commande : {{ commande.produit.name }}</h2>
-                  <div>
-                      <h3>{{ commande.produit.description }}</h3>
-                      <p>{{ commande.produit.image }}</p>
-                      <p>{{ commande.quantite }}</p>
+                  {% for commande in commandes %}
+                  {% for commandearticle in commande.commandearticle_set.all %}
+                  <div class="modal-content rounded_3 shadow-box mb-1">
+                    <div class="modal-body p-4 text-center rounded-top" style="background-image: url('{{ commandearticle.produit.image.url }}'); background-size: cover; background-position: center; height:180px">
+                      <h3 class="mb-0 text-white shadow">{{ commandearticle.produit.name }}</h3>
+                      <p class="lead text-dark bg-white p-3 ms-3 mt-3 rounded d-inline-block fw-bold mb-0">{{ commandearticle.quantite }}</p>
+                    </div>
+                    <div class="modal-footer flex-nowrap p-0 bg-info">
+                      <a href="{% url 'augmenter_panier_header' commandearticle_id=commandearticle.id %}" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 text-white">Ajouter</a>
+                      <a href="{% url 'supr_panier_header' commande_id=commande.id commandearticle_id=commandearticle.id %}" class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 text-white" data-product-id="1">Supprimer</a>
+                    </div>
                   </div>
+                  {% endfor %}
                   {% empty %}
-                      <p>Aucun produit pour cette commande.</p>
-              {% endfor %} -->
+                  <p class="text-black">Aucun produit pour cette commande.</p>
+                  {% endfor %}
+                  <h4 class="text-start me-3 fw-bold text-dark mt-3">Total : {{ cart.total }} €</h4>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-dark text-black" data-bs-dismiss="modal">Fermer</button>
@@ -101,23 +108,27 @@
                 </div>
             </div>
             </div>
-
-            <svg width="24" height="24" class="cart-count-svg">
-                <circle cx="12" cy="12" r="10" fill="white" />
-                <text class="fw-bold" id="cart-count" x="12" y="16" font-size="10" text-anchor="middle">0</text>
-            </svg>
+                {% if total_quantite > 0 %}
+                <svg width="24" height="24" class="cart-count-svg">
+                  <circle cx="12" cy="12" r="10" fill="white" />
+                  <text class="fw-bold" id="cart-count" x="12" y="16" font-size="10" text-anchor="middle">{{ total_quantite }}</text>
+              </svg>
+                {% else %}
+                <svg width="24" height="24" class="cart-count-svg">
+              </svg>
+                {% endif %}
             </a></li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="text-end ms-auto me-4">
+    <div class="text-end ms-auto" style="margin-right: 50px;">
       <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center text-light" id="bd-theme" type="button" aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (dark)">
           <!-- <svg class="bi" width="24" height="24"><use href="#person"></use></svg>
           <span class="visually-hidden" id="bd-theme-text">Toggle theme</span> -->
           {{ user.username }}
       </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+      <ul class="dropdown-menu dropdown-menu-end bg-light text-black me-4" aria-labelledby="bd-theme-text" style="margin-top:-45px; box-shadow: 0 0 1px #000">
           <li>
               <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="false">
                 <a href="{% url 'accueil' %}" class="text-decoration-none text-black">  
@@ -148,5 +159,5 @@
       </ul>
   </nav>
   </div>
-</header>  
+</header> 
 </html>
