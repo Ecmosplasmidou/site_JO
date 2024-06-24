@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>Success</title>
+</head>
+<body>
+    {% load static %}
+    {% load templatetags %}
+    {% include 'header3.html' %}
+
+    <div class="container" style="margin-bottom:50px;">
+        <h2 class="pb-2 border-bottom" style="margin-top: 50px; margin-bottom:30px;">Paiement réussi</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <h3 class="fw-bold">Récapitulatif de la commande</h3>
+                {% for commande in commandes %}
+                {% for commandearticle in commande.commandearticles %}
+                    <div class="pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden mb-3 rounded-start shadow-box" style="background-image: url('{{ commandearticle.produit.image.url }}'); background-size: cover; background-position: center;">
+                        <p class="fw-bold text-white shadow">{{ commandearticle.produit.name }}</p>
+                        <p class="fw-bold text-white shadow">Quantité: {{ commandearticle.quantite }} €</p>
+                        <p class="fw-bold text-white shadow">Prix: {{ commandearticle.produit.price|multiply:commandearticle.quantite }} €</p>
+                    </div>
+                {% endfor %}
+                {% endfor %}
+                <h3 class="fw-bold" style="margin-bottom: 70px;">Total de la commande: {{ cart.total }} €</h3>
+            </div>
+            <div class="col-md-6">
+              <img style="margin-top: 20px; margin-left: 30px; border: 1px solid black;" src="{% url 'generate_qr' %}" alt="QR Code">
+                    <a href="{% url 'generate_qr' %}" download="QRCode.png" class="btn btn-lg fw-bold border-dark bg-dark text-white add-to-cart shadow-box" style="margin-left: 80px; margin-top: 30px" data-product-id="1" disabled>Télechargez le QrCode</a>
+            </div>
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+</body>
+</html>

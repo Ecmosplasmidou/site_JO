@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    <title>Politique de confidentialité</title>
+</head>
+<body>
+    {% load static %}
+{% if user.is_authenticated %}
+      {% include 'header2.html' %}
+{% endif %}
+{% if not user.is_authenticated %}
+       {% include 'header.html' %}
+{% endif %}
+
+<div class="container mt-4 mb-4">
+    <p>Politique de confidentialité</p>
+</div>
+
+{% include 'footer.html' %}
+</body>
+</html>

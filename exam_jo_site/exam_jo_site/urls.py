@@ -45,9 +45,16 @@ urlpatterns = [
     path("boxe/", views.boxe, name='boxe'),
     path("football/", views.football, name='football'),
     path("panier/", views.panier, name='panier'),
-    path("checkout/", views.checkout, name='checkout'),
+    path("success/", views.success, name='success'),
+    path("failed/", views.failed, name='failed'),
     path("erreur/", views.erreur, name='erreur'),
     path("search/", views.search_view, name='search_view'),
+    path("mes_commandes/", views.mes_commandes, name='mes_commandes'),
+    path("conditions_genérales_de_vente/", views.CGV, name='CGV'),
+    path("conditions_genérales_utilisation/", views.CGU, name='CGU'),
+    path("mentions_legales/", views.ML, name='ML'),
+    path("politique_de_confidentialite/", views.PDC, name='PDC'),
+    path('generate_qr/', views.generate_qr, name='generate_qr'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # if settings.DEBUG:

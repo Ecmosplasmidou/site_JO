@@ -9,7 +9,17 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.views.generic import TemplateView
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 import os
+
+import stripe
+from stripe.error import CardError, RateLimitError, InvalidRequestError, AuthenticationError, APIConnectionError, StripeError
+from django.conf import settings
+import qrcode
+from django.contrib.auth.decorators import login_required
+
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 from store.models import Produits, Cart, Commandes, CommandeArticle
@@ -64,8 +74,10 @@ def add_to_cart(request, slug, type):
 
     if created:
         # Si le produit n'était pas dans la commande, ajoutez-le au panier
-        panier.commandes.add(commande)
-        panier.save()
+        # panier.commandes.add(commande)
+        # panier.save()
+        cart.commandes.add(commande)
+        cart.save()
     else:
         # Si le produit était déjà dans la commande, augmentez la quantité
         commande_article.quantite += 1
@@ -76,15 +88,34 @@ def add_to_cart(request, slug, type):
 
 
 
+@login_required
 def panier(request):
-    cart = Cart.objects.get(utilisateur=request.user) 
+    cart, created = Cart.objects.get_or_create(utilisateur=request.user) 
     panier = get_object_or_404(Cart, utilisateur=request.user)
     commandearticles = CommandeArticle.objects.filter(commande__in=panier.commandes.all())
-    return render(request, "panier.html", context={"commandes": panier.commandes.all(), 'commandearticles': commandearticles, 'cart': cart})
+    if request.method == "POST":
+        stripe_token = request.POST.get('stripeToken')
+        if stripe_token is not None:
+            try:
+                charge = stripe.Charge.create(
+                    amount=int(cart.total * 100),  # Stripe attend l'amount en centimes
+                    currency="eur",
+                    description="Paiement",
+                    source=stripe_token
+                )
+                if charge.status == 'succeeded':
+                    commandearticles.delete()
+                    return redirect('success')
+                else:
+                    return redirect('failed')  # Redirige vers une page d'échec si le paiement échoue
+            except (CardError, RateLimitError, InvalidRequestError, AuthenticationError, APIConnectionError, StripeError) as e:
+                return redirect('failed')
+        else:
+            # Gérer le cas où le token Stripe n'est pas reçu
+            return redirect('failed')
+    total_in_cents = int(cart.total * 100)
+    return render(request, "panier.html", context={"commandes": panier.commandes.all(), 'commandearticles': commandearticles, 'cart': cart, 'total_in_cents':total_in_cents, 'STRIPE_PUBLIC_KEY': settings.STRIPE_PUBLIC_KEY})
 
-# def vue_panier(request):
-#     panier = get_object_or_404(Cart, utilisateur=request.user)
-#     return render(request, "header3.html", context={"commandes": panier.commandes.all()})
 
 
 def supr_panier(request, commande_id, commandearticle_id):
@@ -143,9 +174,24 @@ def maj_prix(request, produit_id):
     panier.update_total()
     return redirect('panier')
 
+def mes_commandes(request):
+    return render(request, 'mes_commandes.html')
 
-def checkout(request):
-    return render(request, "checkout.html")
+
+def success(request):
+    cart = Cart.objects.get(utilisateur=request.user) 
+    panier = get_object_or_404(Cart, utilisateur=request.user)
+    commandearticles = CommandeArticle.objects.all()
+    commandearticles_ids = commandearticles.values_list('id', flat=True)
+    commandes = panier.commandes.all()
+    rendered_template = render_to_string('success.html', {'commandes': commandes})
+    with open('mes_commandes.html', 'w') as file:
+        file.write(rendered_template)
+    return render(request, "success.html", context={"commandes": commandes, 'commandearticles': commandearticles, 'cart': cart, 'commandearticles_ids':commandearticles_ids})
+
+
+def failed(request):
+    return render(request, 'failed.html')
 
 def erreur(request):
     return render(request, "erreur.html")
@@ -194,4 +240,30 @@ def search_view(request):
         #changer cette page par page d'erreur de recherche plus tard
     else:
         return render(request, "erreur.html", {"query": query})  
+
+def CGV(request):
+    return render(request, "CGV.html")
+
+def CGU(request):
+    return render(request, "CGU.html")
+
+def ML(request):
+    return render(request, "ML.html")
+
+def PDC(request):
+    return render(request, "PDC.html")
+
+
+
+
+
+
+def generate_qr(request):
+    # Générez le QR code
+    img = qrcode.make(str(success))
+
+    # Créez une réponse HTTP avec l'image du QR code
+    response = HttpResponse(content_type="image/png")
+    img.save(response, "PNG")
+    return response
 

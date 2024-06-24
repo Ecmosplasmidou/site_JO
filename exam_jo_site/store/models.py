@@ -62,7 +62,12 @@ class Commandes(models.Model):
         for article in self.commandearticle_set.all():
             total += article.produit.price * article.quantite
         return total
-
+    
+    def autre_commande(self):
+        nouvelle_commande = Commandes.objects.create(utilisateur=self.user)
+        return nouvelle_commande
+    
+    
     def __str__(self):
         return f"{self.utilisateur} {self.type}"
     

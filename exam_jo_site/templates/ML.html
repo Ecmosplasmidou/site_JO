@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+
+    <title>Mentions Légales</title>
+</head>
+<body>
+    {% load static %}
+{% if user.is_authenticated %}
+      {% include 'header2.html' %}
+{% endif %}
+{% if not user.is_authenticated %}
+       {% include 'header.html' %}
+{% endif %}
+
+<div class="container mt-4 mb-4">
+    <p>Mentions Légales</p>
+</div>
+
+{% include 'footer.html' %}
+</body>
+</html>
